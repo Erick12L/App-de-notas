@@ -1,12 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
 
-export default function NoteForm({ onAdd }) {
+export default function NoteForm({ onAdd, onSave, initialData, onCancel }) {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
+  useEffect(() => {
+    if (initialData) {
+      setTitle(initialData.title);
+      setContent(initialData.content);
+    }
+  }, [initialData]);
+
   const handleSubmit = () => {
-    onAdd({ title, content });
+    if (initialData) {
+      onSave({ id: initialData.id, title, content });
+    } else {
+      onAdd({ title, content });
+    }
+
     setTitle('');
     setContent('');
   };
@@ -28,7 +40,10 @@ export default function NoteForm({ onAdd }) {
         multiline
       />
 
-      <Button title="Agregar nota" onPress={handleSubmit} />
+      <Button
+        title={initialData ? "Guardar cambios" : "Agregar nota"}
+        onPress={handleSubmit}
+      />
     </View>
   );
 }
@@ -42,7 +57,8 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     marginBottom: 10,
     padding: 10,
-    borderRadius: 5
+    borderRadius: 5,
+    backgroundColor: '#fff'
   },
   textarea: {
     height: 100,

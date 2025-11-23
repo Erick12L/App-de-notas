@@ -1,11 +1,16 @@
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TextInput } from 'react-native';
 import NoteForm from './NoteForm';
 import NoteList from './NoteList';
+import NoteScreen from './NoteScreen';
 import { API_URL } from "./config";
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function App() {
   const [notes, setNotes] = useState([]);
+  const [editing, setEditing] = useState(null);
+  const [search, setSearch] = useState('');
+  const [viewing, setViewing] = useState(null);
 
   const loadNotes = async () => {
     const res = await fetch(`${API_URL}/notes`);
@@ -24,36 +29,98 @@ export default function App() {
     setNotes([...notes, newNote]);
   };
 
-  const deleteNote = async (id) => {
-    await fetch(`${API_URL}/notes/${id}`, {
-      method: 'DELETE',
+  const updateNote = async (note) => {
+    const res = await fetch(`${API_URL}/notes/${note.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(note)
     });
+
+    const updated = await res.json();
+    setNotes(notes.map(n => n.id === updated.id ? updated : n));
+    setEditing(null);
+  };
+
+  const deleteNote = async (id) => {
+    await fetch(`${API_URL}/notes/${id}`, { method: 'DELETE' });
     setNotes(notes.filter((n) => n.id !== id));
+  };
+
+  const filteredNotes = notes.filter(n =>
+    n.title.toLowerCase().includes(search.toLowerCase()) ||
+    n.content.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const openNoteScreen = (note) => {
+    setViewing(note);
   };
 
   useEffect(() => {
     loadNotes();
   }, []);
 
-  return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Notas</Text>
+  return viewing ? (
+     <NoteScreen
+        note={viewing}
+        onSave={updateNote}
+        onClose={() => setViewing(null)}
+      />
+    ) : (
+    <LinearGradient
+      colors={['#ece1e8ff', '#eb97cbff','#ef9fd1ff']}
+      style={styles.container}
+    >
+      <ScrollView contentContainerStyle={{ paddingBottom: 80 }}>
+        
+        <Text style={styles.title}>Notas</Text>
 
-      <NoteForm onAdd={addNote} />
+        <TextInput
+          placeholder="Escribe para buscar una nota!"
+          value={search}
+          onChangeText={setSearch}
+          style={{
+            backgroundColor: '#fff',
+            padding: 10,
+            borderRadius: 5,
+            marginBottom: 15,
+            borderWidth: 1,
+            borderColor: '#ccc'
+          }}
+        />
 
-      <NoteList notes={notes} onDelete={deleteNote} />
-    </ScrollView>
+        {editing ? (
+          <NoteForm
+            initialData={editing}
+            onSave={updateNote}
+            onCancel={() => setEditing(null)}
+          />
+        ) : (
+          <NoteForm onAdd={addNote} />
+        )}
+
+        <NoteList
+          notes={filteredNotes}
+          onDelete={deleteNote}
+          onSelect={openNoteScreen}
+        />
+
+      </ScrollView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    marginTop: 30,
+    flex: 1,
+    paddingTop: 30,
+    paddingHorizontal: 20,
   },
   title: {
     fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 20,
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 5
   }
 });

@@ -1,35 +1,48 @@
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 
-export default function NoteList({ notes, onDelete }) {
+export default function NoteList({ notes, onDelete, onSelect }) {
   return (
-    <View style={styles.list}>
+    <View style={styles.grid}>
       {notes.map(note => (
-        <View key={note.id} style={styles.card}>
-          <Text style={styles.title}>{note.title}</Text>
-          <Text style={styles.content}>{note.content}</Text>
+        <TouchableOpacity
+          key={note.id}
+          style={styles.card}
+          onPress={() => onSelect(note)}
+        >
+          <Text style={styles.title} numberOfLines={1}>
+            {note.title}
+          </Text>
+          <Text style={styles.content} numberOfLines={6}>
+            {note.content}
+          </Text>
 
           <Button
             title="Borrar"
             color="red"
             onPress={() => onDelete(note.id)}
           />
-        </View>
+        </TouchableOpacity>
       ))}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  list: {
-    marginTop: 10
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between'
   },
   card: {
-    borderWidth: 1,
-    borderColor: '#ccc',
+    width: '48%',
+    backgroundColor: '#fff',
     padding: 12,
-    borderRadius: 8,
-    marginBottom: 12,
-    backgroundColor: '#fff'
+    borderRadius: 10,
+    marginBottom: 15,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 4
   },
   title: {
     fontSize: 18,
@@ -37,7 +50,7 @@ const styles = StyleSheet.create({
     marginBottom: 6
   },
   content: {
-    fontSize: 16,
+    fontSize: 15,
     marginBottom: 10
   }
 });

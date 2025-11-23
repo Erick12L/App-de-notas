@@ -41,6 +41,24 @@ app.delete('/notes/:id', (req, res) => {
   res.json({ success: true });
 });
 
-app.listen(PORT, () => {
+//Editar nota
+app.put('/notes/:id', (req, res) => {
+  const { id } = req.params;
+  const { title, content } = req.body;
+
+  let notes = JSON.parse(fs.readFileSync('./notes.json'));
+  const index = notes.findIndex(n => n.id === Number(id));
+
+  if (index === -1) return res.status(404).json({ error: 'Nota no encontrada' });
+
+  notes[index] = { ...notes[index], title, content };
+
+  fs.writeFileSync('./notes.json', JSON.stringify(notes, null, 2));
+
+  res.json(notes[index]);
+});
+
+//Para no tener problema con la conexión del celular
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
 });
