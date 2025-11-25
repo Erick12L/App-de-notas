@@ -6,15 +6,21 @@ export default function NoteScreen({ note, onSave, onClose }) {
   const [content, setContent] = useState(note.content);
 
   const handleSave = () => {
+  if (note.id) {
     onSave({ ...note, title, content });
-    onClose();
-  };
+  } else {
+    onSave({ title, content });
+  }
+  onClose();
+};
+
 
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.title}
         value={title}
+        placeholder="Título"
         onChangeText={setTitle}
       />
 
@@ -22,6 +28,7 @@ export default function NoteScreen({ note, onSave, onClose }) {
         style={styles.content}
         multiline
         value={content}
+        placeholder="Contenido"
         onChangeText={setContent}
       />
 
@@ -33,8 +40,9 @@ export default function NoteScreen({ note, onSave, onClose }) {
 const styles = StyleSheet.create({
   container: { 
      flex: 1,
-     padding: 20, 
-     backgroundColor: '#ffffffff' 
+     padding: 20,
+     paddingBottom: 60,
+     backgroundColor: '#ffffffff'
   },
   title: {
     fontSize: 24,

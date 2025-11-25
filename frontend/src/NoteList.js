@@ -9,12 +9,14 @@ export default function NoteList({ notes, onDelete, onSelect }) {
           style={styles.card}
           onPress={() => onSelect(note)}
         >
-          <Text style={styles.title} numberOfLines={1}>
-            {note.title}
-          </Text>
-          <Text style={styles.content} numberOfLines={6}>
-            {note.content}
-          </Text>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.title} numberOfLines={1}>
+              {note.title}
+            </Text>
+            <Text style={styles.content} numberOfLines={6}>
+              {note.content}
+            </Text>
+          </View>
 
           <Button
             title="Borrar"
@@ -42,7 +44,9 @@ const styles = StyleSheet.create({
     elevation: 3,
     shadowColor: '#000',
     shadowOpacity: 0.2,
-    shadowRadius: 4
+    shadowRadius: 4,
+    justifyContent: 'space-between',
+    minHeight: 180
   },
   title: {
     fontSize: 18,

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput } from 'react-native';
-import NoteForm from './NoteForm';
+import { View, Text, StyleSheet, ScrollView, TextInput, Button } from 'react-native';
 import NoteList from './NoteList';
 import NoteScreen from './NoteScreen';
 import { API_URL } from "./config";
@@ -8,7 +7,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 export default function App() {
   const [notes, setNotes] = useState([]);
-  const [editing, setEditing] = useState(null);
   const [search, setSearch] = useState('');
   const [viewing, setViewing] = useState(null);
 
@@ -60,53 +58,56 @@ export default function App() {
   }, []);
 
   return viewing ? (
-     <NoteScreen
-        note={viewing}
-        onSave={updateNote}
-        onClose={() => setViewing(null)}
+  <NoteScreen
+    note={viewing}
+    onSave={(note) => {
+      if (note.id) {
+        updateNote(note);
+      } else {
+        addNote(note);
+      }
+    }}
+    onClose={() => setViewing(null)}
+  />
+) : (
+  <LinearGradient
+    colors={['#ece1e8ff', '#eb97cbff', '#ef9fd1ff']}
+    style={styles.container}
+  >
+    <ScrollView contentContainerStyle={{ paddingBottom: 80 }}>
+      
+      <Text style={styles.title}>Notas</Text>
+
+      <TextInput
+        placeholder="Escribe para buscar una nota!"
+        value={search}
+        onChangeText={setSearch}
+        style={{
+          backgroundColor: '#fff',
+          padding: 10,
+          borderRadius: 5,
+          marginBottom: 15,
+          borderWidth: 1,
+          borderColor: '#ccc'
+        }}
       />
-    ) : (
-    <LinearGradient
-      colors={['#ece1e8ff', '#eb97cbff','#ef9fd1ff']}
-      style={styles.container}
-    >
-      <ScrollView contentContainerStyle={{ paddingBottom: 80 }}>
-        
-        <Text style={styles.title}>Notas</Text>
 
-        <TextInput
-          placeholder="Escribe para buscar una nota!"
-          value={search}
-          onChangeText={setSearch}
-          style={{
-            backgroundColor: '#fff',
-            padding: 10,
-            borderRadius: 5,
-            marginBottom: 15,
-            borderWidth: 1,
-            borderColor: '#ccc'
-          }}
+      <View style={{ marginBottom: 20 }}>
+        <Button
+          title="Agregar nota"
+          onPress={() => setViewing({ title: "", content: ""})}
         />
+      </View>
 
-        {editing ? (
-          <NoteForm
-            initialData={editing}
-            onSave={updateNote}
-            onCancel={() => setEditing(null)}
-          />
-        ) : (
-          <NoteForm onAdd={addNote} />
-        )}
+      <NoteList
+        notes={filteredNotes}
+        onDelete={deleteNote}
+        onSelect={openNoteScreen}
+      />
 
-        <NoteList
-          notes={filteredNotes}
-          onDelete={deleteNote}
-          onSelect={openNoteScreen}
-        />
-
-      </ScrollView>
-    </LinearGradient>
-  );
+    </ScrollView>
+  </LinearGradient>
+);
 }
 
 const styles = StyleSheet.create({
