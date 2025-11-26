@@ -36,7 +36,6 @@ export default function App() {
 
     const updated = await res.json();
     setNotes(notes.map(n => n.id === updated.id ? updated : n));
-    setEditing(null);
   };
 
   const deleteNote = async (id) => {
@@ -95,7 +94,7 @@ export default function App() {
       <View style={{ marginBottom: 20 }}>
         <Button
           title="Agregar nota"
-          onPress={() => setViewing({ title: "", content: ""})}
+          onPress={() => setViewing({ title: "", content: "", color: "#ffffff" })}
         />
       </View>
 

@@ -6,7 +6,7 @@ export default function NoteList({ notes, onDelete, onSelect }) {
       {notes.map(note => (
         <TouchableOpacity
           key={note.id}
-          style={styles.card}
+          style={[styles.card, { backgroundColor: note.color || '#fff' }]}
           onPress={() => onSelect(note)}
         >
           <View style={{ flex: 1 }}>
@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
   },
   card: {
     width: '48%',
-    backgroundColor: '#fff',
     padding: 12,
     borderRadius: 10,
     marginBottom: 15,

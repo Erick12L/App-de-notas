@@ -15,13 +15,14 @@ app.get('/notes', (req, res) => {
 
 //Crear nota
 app.post('/notes', (req, res) => {
-  const { title, content } = req.body;
+  const { title, content, color } = req.body;
   const notes = JSON.parse(fs.readFileSync('./notes.json'));
 
   const newNote = {
     id: Date.now(),
     title,
-    content
+    content,
+    color: color || '#ffffff'
   };
 
   notes.push(newNote);
@@ -44,14 +45,14 @@ app.delete('/notes/:id', (req, res) => {
 //Editar nota
 app.put('/notes/:id', (req, res) => {
   const { id } = req.params;
-  const { title, content } = req.body;
+  const { title, content, color } = req.body;
 
   let notes = JSON.parse(fs.readFileSync('./notes.json'));
   const index = notes.findIndex(n => n.id === Number(id));
 
   if (index === -1) return res.status(404).json({ error: 'Nota no encontrada' });
 
-  notes[index] = { ...notes[index], title, content };
+  notes[index] = { ...notes[index], title, content, color: color || notes[index].color };
 
   fs.writeFileSync('./notes.json', JSON.stringify(notes, null, 2));
 
