@@ -5,23 +5,30 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/LogoNotas.png",
+    "scheme": "notasapp",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.erickaxel.notasapp"
     },
+
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/LogoNotas.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.erickaxel.notasapp"
     },
+
     "web": {
       "favicon": "./assets/LogoNotas.png"
     }

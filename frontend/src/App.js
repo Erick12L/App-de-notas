@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, Button } from 'react-native';
 import NoteList from './NoteList';
 import NoteScreen from './NoteScreen';
-import { API_URL } from "./config";
 import { LinearGradient } from 'expo-linear-gradient';
+import { API_URL } from "./config";
 
 export default function App() {
   const [notes, setNotes] = useState([]);
